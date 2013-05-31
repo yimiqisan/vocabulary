@@ -38,12 +38,12 @@ def init_logger(log_level=logging.ERROR):
 
 def _check_signature(message):
     signature = message.pop('signature')
-#    logger.error('[_check_signature]> signature: %s' % signature)
-#    logger.error(message)
+    logger.error('[_check_signature]> signature: %s' % signature)
+    logger.error(message)
 
     keylist = list(message)
     keylist.sort()
-#    logger.error(keylist)
+    logger.error(keylist)
     compare = ''.join([str(message[key]) for key in keylist])
 
     other_keylist = ['timestamp', 'nonce', 'token']
