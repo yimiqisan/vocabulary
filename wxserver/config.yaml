@@ -1,1 +1,85 @@
-TOKEN: 'b61e7ad8c5194994903cd11be6160dc0'
+# 果壳网全局的配置文件
+#
+# 这里的配置会被 hello 工具载入, 大写化后冠以 GUOKR_ 前缀存放在系统变量中
+#
+# 怎样解决继承关系: http://blog.101ideas.cz/posts/dry-your-yaml-files.html
+
+_DB_MASTER: &db_master 'postgresql+psycopg2://dbu:dddd@localhost/backend'
+_DB_SLAVES: &db_slaves ['postgresql+psycopg2://dbu:dddd@localhost/backend']
+_REDIS: &redis 'redis://localhost:6379/1'
+_APPTPL: &apptpl
+    HOST: 0.0.0.0
+    DB_MASTER: *db_master
+    DB_SLAVES: *db_slaves
+    REDIS: *redis
+    PROCESSES: 2
+    ENABLE_THREADS: true
+    LISTEN: 100
+    ENABLE_THRESHOLD_CONTROL: true # always 代表总是抛出exceed错误 (或验证码), true代表正常检查, false代表永不检查
+    ENABLE_SQL_ECHO: false # 打印SQL
+    ENABLE_APPRAISER: true # 贝叶斯黑名单的开关
+    OAUTH2_CLIENT_ID: 32353
+    OAUTH2_CLIENT_PASSWORD: 86335d9d444b2bd9f65544e989581cf185311d1d
+    SECRET_KEY: 65cf603944b1b32c8d6ec2d2a880ec8a57b61b5a
+    DEFAULT_AVATAR_HASHKEY: TL27-S81EuoahCN7pVlXlzCI6I07ORoBQCo7fDv5EUqgAAAAoAAAAFBO
+    ADMINS: ['yimiqisan@gmail.com']
+
+DEVELOPMENT: &defaults
+
+    USE_HTTP: false
+
+    VERSION: 3.1 # 全局的版本号, 没什么用, 可能用到user-agent中
+
+    DOMAIN_NAME: dev.guokr.com
+    UNIFIED_PORT: 15000
+
+    ELASTICSEARCH_DOMAIN: 10.0.80.13
+    RABBITMQ: amqp://guest:guest@localhost:5672
+    JENKINS_CI: http://ci.iguokr.com
+
+    DB_BACKEND: 'postgresql+psycopg2://dbu:dddd@localhost/backend' # 将被迁移的backend数据库
+
+    OLD_STORAGE: '/data2/philip/storage' # 将被迁移的旧图片文件夹 (gkimage 的上层文件夹)
+    OLD_IMG1_ROOT: 'http://www.guokr.com/'
+    AXIUS_REDIS: 'redis://localhost:6379/0'
+
+    STATIC_DIR: frontend/src/
+    MOBILE_STATIC_DIR: frontend/src/mobile/
+    YOUTHPLAN_DIR: frontend/src/youthplan/
+    SPECIAL_DIR: frontend/src/special/
+
+    NGINX:
+        CHROOT: .py/
+
+    # 一个routing proxy, 将请求转发给其他app
+    APP_ROUTER: &app_router
+        HOST: 0.0.0.0
+        PORT: 15000
+        PROCESSES: 8
+        ENABLE_THREADS: true
+        USE_HTTP: true
+        DISABLE_LOGGING: true
+        LOG_4XX: true
+
+    # 算法应用的连接设置
+    APP_AUTH: &app_auth
+        <<: *apptpl
+        PORT: 16001
+        SERVER_TYPE: app
+        DB_MASTER: 'postgresql+psycopg2://auth:aaaa@localhost/auth'
+        DB_SLAVES: ['postgresql+psycopg2://auth:aaaa@localhost/auth']
+        REDIS: 'redis://localhost:6379/1'
+    APP_PANEL: &app_panel
+        <<: *apptpl
+        PORT: 16009
+        SERVER_TYPE: app
+        DB_MASTER: 'postgresql+psycopg2://panel:pppp@localhost/panel'
+        DB_SLAVES: ['postgresql+psycopg2://panel:pppp@localhost/panel']
+    APP_WORDS: &app_words
+        <<: *apptpl
+        PORT: 16019
+        SERVER_TYPE: app
+        DB_MASTER: 'postgresql+psycopg2://words:wwww@localhost/words'
+        DB_SLAVES: ['postgresql+psycopg2://words:wwww@localhost/words']
+        REDIS: 'redis://localhost:6379/3'
+
