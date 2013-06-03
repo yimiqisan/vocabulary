@@ -60,7 +60,6 @@ def retrieve(dtime=YESTERDAY):
 	try:
 		load_date = datetime.strptime(dtime, ISO_DATE_FORMAT)
 	except ValueError:
-		app.logger.error('date format error should [year-month-day]')
 		return 'date format error should [year-month-day]'
 	db = get_db()
 	cur = db.execute('select word, meaning from words order by id desc')
@@ -85,8 +84,6 @@ def check_xml_wf(xml):
         xml = etree.parse(xml)
         return xml
     except etree.XMLSyntaxError, e:
-        logger.error(
-            '[返回数据]:This %s \n is NOT a weill-formed xml!! %s' % (xml, e))
         return False
 
 def get_message_data(xml):
@@ -115,8 +112,6 @@ def wx_post():
         event_key = message_dict.get('EventKey', '').strip()
         message_type = message_dict['MsgType']
     except KeyError, e:
-        logger.error('[返回数据]:获取的消息数据有错误: %s ' % e)
-        logger.error(message_dict)
         return result
     return '你好'
 
