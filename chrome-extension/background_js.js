@@ -118,7 +118,8 @@
 				!c && !e && (a = "none");
 				_gaq && _gaq.push(["_trackEvent", "lookup", "type_" + a]);
 				a = "http://translate.google.com/translate_t?source=dict-chrome-ex&sl=auto&tl=" + t.language + "&q=" + encodeURIComponent(b.sanitizedQuery);
-                aa = "http://www.shanbay.com/api/learning/add/" + encodeURIComponent(b.sanitizedQuery);
+                aa = encodeURIComponent(b.sanitizedQuery);
+				ab = e.meaningText;
 				f = "http://www.google.com/search?source=dict-chrome-ex&defl=" + t.language + "&hl=" + t.language + "&q=" + encodeURIComponent(b.sanitizedQuery) + "&tbo=1&tbs=dfn:1";
 				if ("fetch_html" == b.request.type) {
 					if (l) if (c = b.translateResponse, d = I(c, m)) {
@@ -153,7 +154,7 @@
 					}
 				} else {
 					g = k;
-					l && e ? (g = e, g.moreUrl = a, g.addUrl = aa, d && (d.audio && "en" == e.srcLang.toLowerCase()) && (g.audio = d.audio)) : c && (g = c, g.moreUrl = f);
+					l && e ? (g = e, g.moreUrl = a, g.word = aa, g.meaning = ab, d && (d.audio && "en" == e.srcLang.toLowerCase()) && (g.audio = d.audio)) : c && (g = c, g.moreUrl = f);
 					g && !g.prettyQuery && (g.prettyQuery = b.sanitizedQuery);
 					a = m;
 					if (("true" == t.popupDblclick && "none" == t.popupDblclickKey || "true" == t.popupSelect && "none" == t.popupSelectKey) && A(s, b.sanitizedQuery)) a = h;

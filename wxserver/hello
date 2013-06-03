@@ -29,7 +29,6 @@ export REQUIREMENT_EXCLUDES="$BASE/tools/requirement_excludes.txt"
 export STAGING_REQUIREMENTS="$BASE/tools/staging_requirements.txt"
 export VIRTUALENV_PATH="$BASE/.py"
 export PYTHON_PACKAGES="$BASE/tools/python-packages"
-export LEIN_HOME="$BASE/algo/avalon/leiningen"
 
 source $BASE/tools/functions.sh
 
@@ -53,7 +52,6 @@ case $1 in
         fi
         # install staging packages
         if [[ $GUOKR_ENVIRON != "PRODUCTION" ]]; then
-            python tools/update_mercurial.py
             staging_upgrade
         fi
         ;;

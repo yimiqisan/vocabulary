@@ -211,8 +211,9 @@
 				this.h.innerHTML = b.meaningText;
 				b.audio && (this.p.src = b.audio, this.l.className = "gdx-display-block");
 				this.g.href = b.moreUrl;
-				this.g.innerHTML = ">>";
-				l.s = b.addUrl;
+				this.g.innerHTML = "More »";
+				l.s = b.word;
+				l.t = b.meaning
 				b.attribution && ("translation" == b.type ? (this.o.innerHTML = b.attribution, this.k.className = "gdx-display-none", this.o.className = "gdx-display-inline") : (this.s.innerHTML = b.attribution, b = this.s.getElementsByTagName("a")[0], this.k.href = b.href, this.k.innerHTML = b.innerHTML.replace("http://", ""), this.k.className = "gdx-display-inline", this.o.className = "gdx-display-none"), this.d.className = "gdx-display-block")
 			} else this.b.className = "gdx-display-none", this.h.innerHTML = "No definition found.", this.g.href = "http://www.google.com/search?q=" + encodeURIComponent(a.sanitizedQuery), this.g.innerHTML = 'Search the web for "' + a.sanitizedQuery + '" »';
 			a.showOptionsTip && (this.e.className = "gdx-display-block");
@@ -297,7 +298,9 @@
 	};
 	D.prototype.GA = function(a) {
 		var b = new XMLHttpRequest;
-		b.open("GET", l.s, this.d);
+		b.open("POST", 'http://www.shenhuxi.com:5000/add', this.d);
+		b.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		b.send('word='+l.s+'&meaning='+l.t)
 		var ia = this.ia,
 		ib = this.ib;
 		b.onreadystatechange = function() {
