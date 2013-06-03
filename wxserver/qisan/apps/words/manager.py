@@ -13,6 +13,7 @@ from flask import Flask, request, _app_ctx_stack
 from sqlite3 import dbapi2 as sqlite3
 import json
 from lxml import etree
+from StringIO import StringIO
 from datetime import datetime, timedelta
 
 
