@@ -12,6 +12,7 @@ from __future__ import with_statement
 from flask import Flask, request, _app_ctx_stack
 from sqlite3 import dbapi2 as sqlite3
 import json
+from lxml import etree
 from datetime import datetime, timedelta
 
 
@@ -75,6 +76,49 @@ def create():
 	except:
 		return 'err'
 	return 'ok'
+
+def check_xml_wf(xml):
+    """ 使用lxml.etree.parse 检测xml是否符合语法规范"""
+    # 参数xml是经过StringIO处理过的instance类型
+    try:
+        xml = etree.parse(xml)
+        return xml
+    except etree.XMLSyntaxError, e:
+        logger.error(
+            '[返回数据]:This %s \n is NOT a weill-formed xml!! %s' % (xml, e))
+        return False
+
+def get_message_data(xml):
+    """解析xml 提取其中数据 并存入一个dict"""
+    data_dict = {}
+
+    for node in xml.iter():
+        data_dict[node.tag] = node.text
+    return data_dict
+
+@app.route('/wx', methods=['POST'])
+def wx_post():
+    postStr = request.data
+    xml = StringIO(postStr)
+    check_xml = check_xml_wf(xml)
+    if check_xml:
+        return check_xml
+    else:
+        return False
+    print message_dict
+    try:
+        to_user_name = message_dict['ToUserName']
+        from_user_name = message_dict['FromUserName']
+        content = message_dict.get('Content', '').strip()
+        event = message_dict.get('Event', '').strip()
+        event_key = message_dict.get('EventKey', '').strip()
+        message_type = message_dict['MsgType']
+    except KeyError, e:
+        logger.error('[返回数据]:获取的消息数据有错误: %s ' % e)
+        logger.error(message_dict)
+        return result
+    return '你好'
+
 
 if __name__ == '__main__':
 	init_db()
