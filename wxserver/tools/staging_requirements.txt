@@ -1,0 +1,11 @@
+flake8==2.0
+freezegun==0.0.7
+hghooks==0.5.5
+mccabe==0.2.1
+mercurial==2.5.4
+nose==1.2.1
+nose-pathmunge==0.1.2
+pep8==1.4.5
+pyflakes==0.7.2
+sh==1.07
+twill==0.9

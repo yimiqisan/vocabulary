@@ -1,0 +1,28 @@
+--- a/PIL-1.1.7/_imagingft.c	2009-11-01 08:44:12.000000000 +0800
++++ b/PIL-1.1.7/_imagingft.c	2012-07-25 14:13:05.162259091 +0800
+@@ -326,7 +326,7 @@
+ 
+     im = (Imaging) id;
+ 
+-    load_flags = FT_LOAD_RENDER;
++    load_flags = FT_LOAD_RENDER | FT_LOAD_NO_BITMAP | FT_LOAD_FORCE_AUTOHINT;
+     if (mask)
+         load_flags |= FT_LOAD_TARGET_MONO;
+ 
+--- a/PIL-1.1.7/setup.py	2009-11-16 00:06:10.000000000 +0800
++++ b/PIL-1.1.7/setup.py	2012-07-25 14:14:14.530259033 +0800
+@@ -214,6 +214,14 @@
+         add_directory(library_dirs, "/usr/lib")
+         add_directory(include_dirs, "/usr/include")
+ 
++        if os.path.isdir("/usr/include/x86_64-linux-gnu"):
++            add_directory(library_dirs, "/usr/lib/x86_64-linux-gnu")
++            add_directory(include_dirs, "/usr/include/x86_64-linux-gnu")
++
++        elif os.path.isdir("/usr/include/i386-linux-gnu"):
++            add_directory(library_dirs, "/usr/lib/i386-linux-gnu")
++            add_directory(include_dirs, "/usr/include/i386-linux-gnu")
++
+         #
+         # insert new dirs *before* default libs, to avoid conflicts
+         # between Python PYD stub libs and real libraries

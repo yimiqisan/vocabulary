@@ -64,12 +64,12 @@ v_activate() {
     GLOBAL_PKG=$(python_lib)
     source "$VIRTUALENV_PATH/bin/activate"
     VIRT_PKG=$VIRTUALENV_PATH/lib/python2.7/site-packages
-    if [ \( ! -d $VIRT_PKG/guokr/platform \) -o \
-        \( "$(readlink $VIRT_PKG/guokr/platform|xargs basename 2>/dev/null)" != "platform_src" \) ]; then
-        rm -rf $VIRT_PKG/guokr
-        mkdir -p $VIRT_PKG/guokr
-        touch $VIRT_PKG/guokr/__init__.py
-        ln -s ../../../../../guokr/platform_src $VIRT_PKG/guokr/platform
+    if [ \( ! -d $VIRT_PKG/qisan/platform \) -o \
+        \( "$(readlink $VIRT_PKG/qisan/platform|xargs basename 2>/dev/null)" != "platform_src" \) ]; then
+        rm -rf $VIRT_PKG/qisan
+        mkdir -p $VIRT_PKG/qisan
+        touch $VIRT_PKG/qisan/__init__.py
+        ln -s ../../../../../qisan/platform_src $VIRT_PKG/qisan/platform
     fi
     if [ \( -d $GLOBAL_PKG/PyQt4 \) -a \
          \( ! -d $VIRT_PKG/PyQt4 \) ]; then
@@ -82,9 +82,6 @@ v_activate() {
     if [ \( -f $GLOBAL_PKG/sipconfig.py \) -a \
          \( ! -f $VIRT_PKG/sipconfig.py \) ]; then
         ln -s "$GLOBAL_PKG/sipconfig.py" "$VIRT_PKG"
-    fi
-    if [ ! -f $VIRTUALENV_PATH/bin/lein ]; then
-        ln -s $BASE/algo/avalon/leiningen/lein $VIRTUALENV_PATH/bin
     fi
     export PATH="$PATH:$BASE/tools/phabricator/arcanist/bin"
 }
@@ -257,7 +254,7 @@ upgrade() {
     # 暂时关闭 jar 编译, 未来考虑探测是否需要重新编译, 只给提示
     #lein_build_jar_all
     #lein_build_uberjar_all
-    eval $(python $BASE/tools/load_yaml.py $BASE/guokr.yaml)
+    eval $(python $BASE/tools/load_yaml.py $BASE/config.yaml)
 }
 
 staging_upgrade() {
@@ -483,10 +480,9 @@ complete_hello() {
 complete -F complete_hello hello.sh
 
 get_all_confs() {
-    echo $(find $BASE/guokr/apps -name "app.yaml")
-    echo $(find $BASE/guokr/services -name "app.yaml")
-    #echo $(find $BASE/guokr/router -name "app.yaml")
-    echo $(find $BASE/algo/knights -name "app.yaml")
+    echo $(find $BASE/qisan/apps -name "app.yaml")
+    echo $(find $BASE/qisan/services -name "app.yaml")
+    #echo $(find $BASE/qisan/router -name "app.yaml")
 }
 
 get_all_apps() {
@@ -504,22 +500,6 @@ get_enabled_apps() {
 get_conf() {
     for vassal in $(get_all_confs); do
         v=$(echo $vassal|grep $1/app.yaml)
-        if [ -n "$v" ]; then
-            echo $v
-            return
-        fi
-    done
-}
-
-get_all_cron_confs() {
-    echo $(find $BASE/guokr/apps -name "cron.yaml")
-    echo $(find $BASE/algo/knights -name "cron.yaml")
-}
-
-get_cron_conf() {
-    all_confs=$(get_all_cron_confs)
-    for vassal in $all_confs; do
-        v=$(echo $vassal|grep $1/cron.yaml)
         if [ -n "$v" ]; then
             echo $v
             return
@@ -621,8 +601,8 @@ _manage_update() {
         fi
     done
 
-    $BASE/tools/make_routing_rules.py $BASE/guokr/platform_src/routing_rules.py
-    $BASE/tools/inspect_static.py $BASE/guokr/platform_src/static_files.py
+    $BASE/tools/make_routing_rules.py $BASE/qisan/platform_src/routing_rules.py
+    $BASE/tools/inspect_static.py $BASE/qisan/platform_src/static_files.py
     if [ "$GUOKR_ENVIRON" != "PRODUCTION" ]; then
         nginx_render
     fi
@@ -739,42 +719,6 @@ _manage_review() {
     arc diff "$rev"
 }
 
-_manage_cronsync() {
-    APP=$@
-    if [ -z "$APP" ]; then
-        echo_error "APPNAME needed"
-        return 1
-    fi
-
-    conf1=$(get_conf $APP)
-    if [ -z "$conf1" ]; then
-        echo_error "App $APP not found"
-        return 1
-    fi
-
-    conf2=$(get_cron_conf $APP)
-    if [ -z "$conf2" ]; then
-        echo_error "App $APP doesn't has cron.yaml."
-        return 1
-    fi
-    python $BASE/tools/cronsync.py $conf1 $conf2
-}
-
-_manage_cronlist() {
-    APP=$@
-    if [ -z "$APP" ]; then
-        echo_error "APPNAME needed"
-        return 1
-    fi
-
-    conf=$(get_conf $APP)
-    if [ -z "$conf" ]; then
-        echo_error "App $APP not found"
-        return 1
-    fi
-    python $BASE/tools/cronsync.py list $conf
-}
-
 _manage_jar() {
     for project in `find  $BASE/algo/arsenal -name "project.clj"`; do
         lein_build_jar $(dirname $project|xargs basename)
@@ -889,12 +833,6 @@ manage() {
             ;;
         create_app)
             _manage_create_app $APPS
-            ;;
-        cronsync)
-            _manage_cronsync $APPS
-            ;;
-        cronlist)
-            _manage_cronlist $APPS
             ;;
         jar)
             _manage_jar
