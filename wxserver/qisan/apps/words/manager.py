@@ -92,6 +92,35 @@ def wx_get():
 	return echostr
 
 
+def prepare_reply_data(from_user_name, to_user_name, content):
+	"""准备消息需要返回数据"""
+	reply_dict = {}
+	reply_dict['ToUserName'] = from_user_name
+	reply_dict['FromUserName'] = to_user_name
+	reply_dict['CreateTime'] = int(time())
+	db = get_db()
+	cur = db.execute('select word, meaning from words order by id desc')
+	entries = cur.fetchall()
+	replies = [dict(entry) for entry in entries]
+	reply = reply_message(reply_dict, replies)
+	return reply
+
+
+def reply_message(user_info, replies):
+	if not replies:
+		return ''
+	if not isinstance(replies, list):
+		replies = [replies]
+	if ask.reply_type == 'text':
+		user_info.update(replies[0])
+		xml = TEXT_TPL.format(**user_info)
+	if check_xml_wf(StringIO(xml)):
+		logger.error(str(xml))
+		return xml
+	else:
+		return ''
+
+
 @app.route('/wx', methods=['POST'])
 def wx_post():
 	result = ''
@@ -139,5 +168,5 @@ def create():
 
 if __name__ == '__main__':
 	init_db()
-	app.run(host='0.0.0.0')
+	app.run(host='0.0.0.0', port=80)
 

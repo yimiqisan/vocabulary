@@ -298,7 +298,7 @@
 	};
 	D.prototype.GA = function(a) {
 		var b = new XMLHttpRequest;
-		b.open("POST", 'http://www.shenhuxi.com:5000/add', this.d);
+		b.open("POST", 'http://www.shenhuxi.com/add', this.d);
 		b.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		b.send('word='+l.s+'&meaning='+l.t)
 		var ia = this.ia,
