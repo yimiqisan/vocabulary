@@ -11,17 +11,17 @@ import os
 import yaml
 import socket
 
-from guokr.platform.errors import GuokrException
-from guokr.platform.errors import GuokrEnvironError
+from guokr.platform.errors import QisanException
+from guokr.platform.errors import QisanEnvironError
 
-class ConfigurationError(GuokrException):
+class ConfigurationError(QisanException):
     pass
 
 def load_yaml(yamlfile):
     try:
         environ = os.environ['GUOKR_ENVIRON']
     except KeyError:
-        raise GuokrEnvironError(
+        raise QisanEnvironError(
             'Environment variable GUOKR_ENVIRON is not provided')
     with open(yamlfile, 'rb') as fp:
         conf = yaml.load(fp.read())

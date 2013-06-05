@@ -1,0 +1,18 @@
+DEVELOPMENT: &defaults
+    APPNAME: words
+    DEBUG: true
+    DEFAULT_SUBDOMAIN: www
+    DBNAME = words
+    USERNAME = words
+    PASSWORD = wwww
+    DATE_FMT = %Y-%m-%d
+
+    WX_TOKEN: b61e7ad8c5194994903cd11be6160dc0
+
+
+STAGING:
+    <<: *defaults
+
+PRODUCTION:
+    <<: *defaults
+    DEBUG: false

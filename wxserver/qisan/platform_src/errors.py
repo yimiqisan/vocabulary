@@ -5,13 +5,13 @@ import types
 
 _self = sys.modules[__name__]
 
-class GuokrException(Exception):
+class QisanException(Exception):
     pass
 
-class GuokrEnvironError(GuokrException):
+class QisanEnvironError(QisanException):
     pass
 
-class GuokrConfigError(GuokrException):
+class QisanConfigError(QisanException):
     '''
     服务器配置错误，阻止启动
     '''

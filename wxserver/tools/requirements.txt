@@ -3,5 +3,7 @@ Flask==0.9
 Jinja2==2.6
 lxml==3.0.2
 python-dateutil==1.5
+PyYAML==3.10
+uWSGI==1.9.10
 Werkzeug==0.8.3
 wsgiref==0.1.2
