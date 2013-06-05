@@ -9,17 +9,16 @@ Copyright (c) 2013 __MyCompanyName__. All rights reserved.
 
 from __future__ import with_statement
 
-from flask import Flask, abort, request
+from flask import Flask, abort, request, Blueprint
 import json
 import yaml
 from datetime import datetime, timedelta
 from StringIO import StringIO
 
 
+app = Blueprint('app', __name__)
+
 from database import DataBase
-
-
-app = Flask(__name__)
 
 
 class ConfigurationError(Exception):

@@ -7,7 +7,6 @@ Created by 刘 智勇 on 2013-06-02.
 Copyright (c) 2013 __MyCompanyName__. All rights reserved.
 """
 
-from .words import app
 from flask import _app_ctx_stack
 from sqlite3 import dbapi2 as sqlite3
 
@@ -43,12 +42,3 @@ class DataBase(object):
         top = _app_ctx_stack.top
         if hasattr(top, 'sqlite_db'):
             top.sqlite_db.close()
-
-db = None
-
-
-def get_globle_db():
-    global db
-    if not db:
-        db = DataBase()
-    return db
